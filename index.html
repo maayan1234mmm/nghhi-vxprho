@@ -9,12 +9,13 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #d7ccc8;
     }
     #admin-panel {
       border: 2px dashed #999;
       padding: 1rem;
       margin-top: 2rem;
-      background-color: #f9f9f9;
+      background-color: #efebe9;
       display: none;
     }
     #admin-panel h3 {
@@ -37,7 +38,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(to right, #5d4037, #1976d2);
+      background: linear-gradient(to right, #4e342e, #6d4c41);
       color: white;
       padding: 1rem;
       border-radius: 1rem;
@@ -58,6 +59,15 @@
       padding: 0.5rem;
       margin-bottom: 0.5rem;
     }
+    #admin-login {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #bcaaa4;
+      padding: 1rem;
+      border-radius: 0 10px 10px 0;
+    }
   </style>
 </head>
 <body>
@@ -75,6 +85,10 @@
       <a href="#contact">צור קשר</a>
     </nav>
   </header>
+
+  <div id="admin-login">
+    <button onclick="promptAdmin()">כניסת מנהל</button>
+  </div>
 
   <main>
     <section id="books">
@@ -106,6 +120,7 @@
       <textarea id="contact-message" placeholder="הודעה"></textarea>
       <button onclick="sendContact()">שלח</button>
       <p id="contact-status"></p>
+      <p>ניתן גם ליצור קשר במייל: <a href="mailto:m0533111884@gmail.com">m0533111884@gmail.com</a></p>
     </section>
   </main>
 
@@ -119,14 +134,17 @@
     let isAdmin = false;
 
     window.addEventListener('DOMContentLoaded', () => {
+      renderBooks();
+      renderCart();
+    });
+
+    function promptAdmin() {
       const password = prompt("אם אתה מנהל, הכנס סיסמה:");
       if (password === "0583283656") {
         isAdmin = true;
         document.body.classList.add('admin');
       }
-      renderBooks();
-      renderCart();
-    });
+    }
 
     function renderBooks() {
       const bookList = document.querySelector('.book-list');
