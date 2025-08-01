@@ -83,11 +83,32 @@
 
   <div id="admin-login">
     <button onclick="loginAdmin()">כניסת מנהל</button>
-  </div>
+  </div><!-- Firebase App (חובה) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<!-- Firebase Database -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "הכנס כאן את המפתח שלך",
+    authDomain: "הכנס כאן את הדומיין",
+    databaseURL: "הכנס כאן את ה-URL של מסד הנתונים",
+    projectId: "הפרויקט שלך",
+    storageBucket: "הכנס כאן",
+    messagingSenderId: "הכנס כאן",
+    appId: "הכנס כאן"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
 
   <div id="admin-panel">
     <h3>ניהול מוצרים</h3>
-    <!-- טופס הוספת ספרים יופיע כאן -->
+    <!-- טופס הוספת ספרים יופיע כאן --> שמור ספרים ידנית
+
   </div>
 
   <div id="contact">
