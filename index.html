@@ -71,7 +71,17 @@
       padding: 1rem;
       border-radius: 0 10px 10px 0;
     }
+    .book {
+      background: #fff;
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
   </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore.js"></script>
 </head>
 <body>
   <div class="logo">
@@ -83,32 +93,17 @@
 
   <div id="admin-login">
     <button onclick="loginAdmin()">כניסת מנהל</button>
-  </div><!-- Firebase App (חובה) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
-<!-- Firebase Database -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "הכנס כאן את המפתח שלך",
-    authDomain: "הכנס כאן את הדומיין",
-    databaseURL: "הכנס כאן את ה-URL של מסד הנתונים",
-    projectId: "הפרויקט שלך",
-    storageBucket: "הכנס כאן",
-    messagingSenderId: "הכנס כאן",
-    appId: "הכנס כאן"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-</script>
-
-
- div id="admin-panel"
-   ניהול מוצרים
-  טופס הוספת ספרים יופיע כאן 
   </div>
+
+  <div id="admin-panel">
+    <h3>ניהול מוצרים</h3>
+    <input type="text" id="book-title" placeholder="שם הספר">
+    <input type="text" id="book-price" placeholder="מחיר">
+    <input type="text" id="book-image" placeholder="קישור לתמונה">
+    <button onclick="addBook()">הוסף ספר</button>
+  </div>
+
+  <div id="book-list"></div>
 
   <div id="contact">
     <h3>צור קשר</h3>
@@ -116,9 +111,56 @@
   </div>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXoCMzNc_vKz0aH5AvL2FxHjEqmJ12szw",
+      authDomain: "nghhi-ca63d.firebaseapp.com",
+      projectId: "nghhi-ca63d",
+      storageBucket: "nghhi-ca63d.appspot.com",
+      messagingSenderId: "850932989650",
+      appId: "1:850932989650:web:58e35112a7605a4e63548c"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     function loginAdmin() {
       document.body.classList.add('admin');
     }
+
+    async function addBook() {
+      const title = document.getElementById('book-title').value;
+      const price = document.getElementById('book-price').value;
+      const image = document.getElementById('book-image').value;
+      if (title && price && image) {
+        await db.collection("books").add({ title, price, image });
+        loadBooks();
+      }
+    }
+
+    async function removeBook(id) {
+      await db.collection("books").doc(id).delete();
+      loadBooks();
+    }
+
+    async function loadBooks() {
+      const list = document.getElementById('book-list');
+      list.innerHTML = '';
+      const snapshot = await db.collection("books").get();
+      snapshot.forEach(doc => {
+        const book = doc.data();
+        const div = document.createElement('div');
+        div.className = 'book';
+        div.innerHTML = `
+          <h4>${book.title}</h4>
+          <p>מחיר: ${book.price} ₪</p>
+          <img src="${book.image}" width="100">
+          <button class="remove" onclick="removeBook('${doc.id}')">מחק</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    loadBooks();
   </script>
 </body>
 </html>
