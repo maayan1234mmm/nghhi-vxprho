@@ -82,6 +82,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-storage.js"></script>
 </head>
 <body>
   <div class="logo">
@@ -99,7 +100,7 @@
     <h3>ניהול מוצרים</h3>
     <input type="text" id="book-title" placeholder="שם הספר">
     <input type="text" id="book-price" placeholder="מחיר">
-    <input type="text" id="book-image" placeholder="קישור לתמונה">
+    <input type="file" id="book-image-file">
     <button onclick="addBook()">הוסף ספר</button>
   </div>
 
@@ -122,17 +123,28 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
     function loginAdmin() {
-      document.body.classList.add('admin');
+      const code = prompt("הכנס קוד גישה למנהל:");
+      if (code === "12345") {
+        document.body.classList.add('admin');
+      } else {
+        alert("קוד שגוי");
+      }
     }
 
     async function addBook() {
       const title = document.getElementById('book-title').value;
       const price = document.getElementById('book-price').value;
-      const image = document.getElementById('book-image').value;
-      if (title && price && image) {
-        await db.collection("books").add({ title, price, image });
+      const file = document.getElementById('book-image-file').files[0];
+
+      if (title && price && file) {
+        const storageRef = storage.ref('book-images/' + file.name);
+        await storageRef.put(file);
+        const imageUrl = await storageRef.getDownloadURL();
+
+        await db.collection("books").add({ title, price, image: imageUrl });
         loadBooks();
       }
     }
